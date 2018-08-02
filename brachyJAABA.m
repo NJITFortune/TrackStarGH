@@ -232,7 +232,7 @@ hold on;
     
 %% Track the pulses of the fish
 
-pFs = 1/eodata.interval;
+dFs = 1/eodata.interval;
 
 [b,a] = butter(3, 300/(pFs/2), 'high');
 fpulses = filtfilt(b,a, eodata.values);
