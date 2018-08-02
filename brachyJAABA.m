@@ -266,7 +266,7 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
     pause(1);
 
     figure(3); clf; plot(tim, dfpulses); 
-    %hold on; plot(out.toe, out.amps, 'r*');   
+    hold on; plot(out(1).toe, out(1).amps, 'r*');   
 
 
 
