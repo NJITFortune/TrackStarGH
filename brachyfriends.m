@@ -1,4 +1,4 @@
-function [fish, imdata] = bestofriends(vdata, fishNum, dil, rango)
+function [fish, imdata] = brachyfriends(vdata, fishNum, dil, rango)
 % Usage: [fish imdata] = traxer(vid, fishNum, dilation-num, rango);
 % This is a simple electric fish tracker based on the Matlab object-tracking script example. Nothing fancy here.
 % vid is the output from VideoReader.
@@ -18,7 +18,7 @@ finalframe = vdata.NumberOfFrames;
 dst = [];  
 jumpthresh = 15; % Number of pixels a fish may move between frames before we think something went wrong
 
-if fishNum > 6; fprintf('The lazy troll who wrote this code has limited you to 6 fish. \n'); end;
+if fishNum > 6; fprintf('The lazy troll who wrote this code has limited you to 6 fish. \n'); end
 
 boxy = [10 10];
 
@@ -31,7 +31,7 @@ colo(1,:)='ro'; colo(2,:)='bo'; colo(3,:)='mo'; colo(4,:)='go'; colo(5,:)='co'; 
 fprintf('Number of frames in video: %i \n', finalframe);
 
 % If the user gave a frame range, then we use that
-if nargin > 3;
+if nargin > 3
     if rango(1) == 9999
             flipper = 1;
             startframe = 1;
@@ -40,9 +40,9 @@ if nargin > 3;
             flipper = 0;
         startframe = rango(1);
         endframe = rango(2);
-        if length(rango) == 3;
+        if length(rango) == 3
             userpick = rango(3); % This is the threshold level
-        end;
+        end
     end
 else
 % Otherwise we as or do the whole video.
@@ -50,23 +50,23 @@ else
     endframe = vdata.NumberOfFrames;
     rango = []; % input('Enter range (e.g. [1000 1500]) or hit return to do entire video: ');
     flipper = 0;
-end;
+end
 
 % Convert to grayscale and reduce to 1/2 size
 % grae is the processed grayscale video - this takes time
 fprintf('Importing video and reducing size.\n');
-if flipper == 0;
-    for i = endframe:-1:startframe;
+if flipper == 0
+    for i = endframe:-1:startframe
         tmp = rgb2gray(read(vdata, i));
         grae(:,:,1+(i-startframe)) = tmp(1:2:end,1:2:end);
-    end;
-end;
-if flipper == 1; % ROTATE 180 degrees
-    for i = endframe:-1:startframe;
+    end
+end
+if flipper == 1 % ROTATE 180 degrees
+    for i = endframe:-1:startframe
         tmp = rgb2gray(read(vdata, i));
         grae(:,:,1+(i-startframe)) = tmp(end:-2:1,end:-2:1);
-    end;
-end;
+    end
+end
     clear tmp;
 
 % Initialize variables for first fish
@@ -84,9 +84,9 @@ fprintf('Allocating memory.\n');
     fish(fishNum).frameno = zeros(endframe-startframe,1);
     
 % Copy initialization of fish for any additional fish
-     if (fishNum > 1); 
-         for j=fishNum:-1:2; fish(j) = fish(end); end; 
-     end;
+     if (fishNum > 1) 
+         for j=fishNum:-1:2; fish(j) = fish(end); end 
+     end
 
 %% Prepare the data for analysis
 
@@ -98,11 +98,11 @@ fprintf('Computing background. \n');
 fprintf('Taking image differences. \n');
     df = imabsdiff(grae, bg);
 
-    threshval = [-0.9 -0.5 -0.3 0.3 0.5 0.9];
+    threshval = [-0.9 -0.7 -0.5 -0.3 -0.1 0.1];
 
     userpick = 99;
 
-    while userpick == 99;
+    while userpick == 99
     
 % Take different thresholds of the background level
 fprintf('Applying thresholds. \n');
@@ -125,21 +125,22 @@ fprintf('Applying thresholds. \n');
     lt = length(thresh); % There are presently 6 thresholds defined above
     N = sort(fix((endframe-startframe)*rand(1,lt))); % We'll display 'lt' random frames from our movie
 
-if length(rango) < 3; % User did not provide which gray level they want
+if length(rango) < 3 % User did not provide which gray level they want
     % Show the User what we've got
-    for pp = 1:lt; % 1 2 3 4 5 6 
+    for pp = 1:lt % 1 2 3 4 5 6 
         figure(1);
         nrw = lt * (pp - 1);
         % Let's do 1 row
-        for rw = 1+nrw:(lt + nrw);
+        for rw = 1+nrw:(lt + nrw)
             wb = (df >= thresh(pp) * 255);
             subplot(lt,lt,rw); imshow(wb(:,:,N(rw-nrw))); 
-        end;
-
-    end;
+        end
+    end
+    
     userpick = input('Which threshold? If all are poopy, use 99: ');
     close(1);
-end;
+    
+end
     if userpick == 99; 
         fprintf('The old numbers were: ');
         threshval
