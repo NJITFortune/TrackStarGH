@@ -232,9 +232,13 @@ hold on;
     
 %% Track the pulses of the fish
 
-[b,a] = butter(3, 300/((1/eodata.interval)/2), 'high');
-fpulses = filtfilt(b,a, eodata.values);
+pFs = 1/eodata.interval;
 
+[b,a] = butter(3, 300/(pFs/2), 'high');
+fpulses = filtfilt(b,a, eodata.values);
+dfpulses = diff(fpulses);
+dfpulses(end+1) = dfpulses(end);  
+tim = 1/dFs:1/dFs:length(fpulses)/dFs;
 
 % If a single fish
 if length(in) == 1
