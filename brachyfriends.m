@@ -10,7 +10,7 @@ function [fish, imdata] = brachyfriends(vdata, fishNum, dil, rango)
 % fish is a structure of output data, imdata is the images structure(grayscale and thresholded)
 %
 
-figure(1); clf; figure(3); clf;
+% figure(1); clf; figure(3); clf;
 
 %% Preparations
 
@@ -141,7 +141,7 @@ if length(rango) < 3 % User did not provide which gray level they want
     close(1);
     
 end
-    if userpick == 99; 
+    if userpick == 99 
         fprintf('The old numbers were: ');
         threshval
         threshval = input('Gimme the new numbers! e.g. [1 2 3 4 5 6]: ');
@@ -164,6 +164,12 @@ fprintf('Click initial fish position(s) in Figure 1. Click largest fish to small
 
         hormax = length(bw(:,1,1)); % hormax and vermax are the size of the video frame
         vermax = length(bw(1,:,1));
+% Import initial clicks.        
+for kk =1:fishNum
+     fish(kk).x(endframe) = fishi(kk,1); 
+     fish(kk).y(endframe) = fishi(kk,2); 
+end
+        
 
 %% Track the fish        
         
@@ -181,30 +187,50 @@ L = logical(bw(max([1 fishi(kk,2)-boxy(1)]):min([fishi(kk,2)+boxy(1) hormax]), m
         % Take the largest blob
         [~, blobidx] = max(area_vector); 
         
-            if isempty(blobidx) == 1 % We have no blob so we need to get a click
+            if isempty(blobidx) == 1 % We have no blob so we need to do something...
                 
-                if kk == stationaryfish % User told us that this fish is stationary
+                if kk == stationaryfish % User already told us that this fish is stationary, so use previous location
                     
-                    % Take the previous known location of the fish
+                    % Take the previous known location and other data of the fish
                     fish(kk).x(jj) = fish(kk).x(jj+1); 
                     fish(kk).y(jj) = fish(kk).y(jj+1);
+                    fish(kk).majorLength(jj) = fish(kk).majorLength(jj+1);
+                    fish(kk).minorLength(jj) = fish(kk).minorLength(jj+1);
+                    fish(kk).majorXs(jj,:) = fish(kk).majorXs(jj+1,:);
+                    fish(kk).majorYs(jj,:) = fish(kk).majorYs(jj+1,:);
+                    fish(kk).minorXs(jj,:) = fish(kk).minorXs(jj+1,:);
+                    fish(kk).minorYs(jj,:) = fish(kk).minorYs(jj+1,:);   
                     
                 end
                 
                 if kk ~= stationaryfish % Lost fish is not a known stationary fish
                 
                 % Show the fish
-                figure(1); clf; imshow(grae(:,:,jj)); hold on;
-                if kk == 1; % THIS IS ME BEING STOOPID.  Didn't bother to figure out how to handle the two fishies
-                    plot(fish(kk).x, fish(kk).y, 'g-');
-                    plot(fish(kk).x(jj+1), fish(kk).y(jj+1), 'go', 'MarkerSize', 2); % Last known location of lost fish
-                    plot(fish(2).x(jj+1), fish(2).y(jj+1), 'b*'); % Last known location of good fish
-                end
-                if kk == 2;
-                    plot(fish(kk).x, fish(kk).y, 'g-');
-                    plot(fish(kk).x(jj+1), fish(kk).y(jj+1), 'go', 'MarkerSize', 2); % Last known location of lost fish
-                    plot(fish(1).x(jj+1), fish(1).y(jj+1), 'r*');
-                end
+                
+                    figure(1); clf; imshow(grae(:,:,jj)); hold on;
+                    plot(fish(kk).x(jj:min([endframe, jj+20])), fish(kk).y(jj:min([endframe, jj+20])), 'g*');
+                    plot(fish(kk).x(jj+1), fish(kk).y(jj+1), 'go', 'MarkerSize', 4); % Last known location of lost fish
+                    
+                    yn = input('Is this fish stationary? 1 for yes. \n');
+                    
+                    if ~isempty(yn)
+                        if yn == 1
+                            
+                    stationaryfish = kk; 
+                    
+                    fish(kk).x(jj) = fish(kk).x(jj+1); 
+                    fish(kk).y(jj) = fish(kk).y(jj+1);
+                    fish(kk).majorLength(jj) = fish(kk).majorLength(jj+1);
+                    fish(kk).minorLength(jj) = fish(kk).minorLength(jj+1);
+                    fish(kk).majorXs(jj,:) = fish(kk).majorXs(jj+1,:);
+                    fish(kk).majorYs(jj,:) = fish(kk).majorYs(jj+1,:);
+                    fish(kk).minorXs(jj,:) = fish(kk).minorXs(jj+1,:);
+                    fish(kk).minorYs(jj,:) = fish(kk).minorYs(jj+1,:);   
+                        
+                        end
+                    end
+                    
+                    if isempty(yn) == 0                    
                 
                 [xTMP, yTMP] = ginput(1); % Get our click
                 fish(kk).x(jj) = round(xTMP); fish(kk).y(jj) = round(yTMP); % We need integers for indices
@@ -215,9 +241,13 @@ L = logical(bw(max([1 fishi(kk,2)-boxy(1)]):min([fishi(kk,2)+boxy(1) hormax]), m
                     fish(kk).majorXs(jj,:) = [];
                     fish(kk).majorYs(jj,:) = [];
                     fish(kk).minorXs(jj,:) = [];
-                    fish(kk).minorYs(jj,:) = [];                    
+                    fish(kk).minorYs(jj,:) = [];   
+                    
+                    end
+                    
+                end % Lost fish is not stationary
 
-            end
+            end % Lost the fish
         
         if isempty(blobidx) == 0 % Yay!  We have a blob.
         % Save the x (centroid) position for the largest blob
@@ -243,253 +273,40 @@ L = logical(bw(max([1 fishi(kk,2)-boxy(1)]):min([fishi(kk,2)+boxy(1) hormax]), m
         fishi(kk,:) = [fish(kk).x(jj) fish(kk).y(jj)]; % fishi is the current location - set it for the next iteration
         
     end
-             if rem(jj,10) == 0
+             if rem(jj,10) == 0 % Update the track every 10 frames
                 figure(3); clf; imshow(grae(:,:,jj)); hold on; 
-                plot(fish(1).x, fish(1).y, 'r*');
-                plot(fish(2).x, fish(2).y, 'b*');
+                plot(fish(1).x(jj:min([endframe, jj+50])), fish(1).y(jj:min([endframe, jj+50])), 'r*');
+                if fishNum == 2
+                    plot(fish(2).x(jj:min([endframe, jj+50])), fish(2).y(jj:min([endframe, jj+50])), 'b*');
+                end
                 pause(0.1); 
              end
-        
+
+    % If fish are in the same location, we have a problem that needs to be
+    % clicked
+        if fishNum == 2
         if fish(1).x(jj) == fish(2).x(jj) && fish(1).y(jj) == fish(2).y(jj)
             
             figure(1); clf; imshow(grae(:,:,jj)); hold on; 
                 plot(fish(1).x(jj+1), fish(1).y(jj+1), 'r*'); 
                 plot(fish(2).x(jj+1), fish(2).y(jj+1), 'b*'); 
+                fprintf('Use separate clicks, large fish first. \n');
             fishi = round(ginput(fishNum));
                          
         end
-
+        end
     
     
 end        
 
 
-%     % I'm not sure what bwlabel does - but works with regionprops
-%         L = logical(bw(:,:,end));
-%     % Get the areas and the centroids and other info for all objects
-%         s = regionprops(L, 'Area', 'Centroid', 'Orientation', 'MajorAxisLength', 'MinorAxisLength');   
-%     % This is our list of blob sizes. 
-%         area_vector = [s.Area];
-%     % Sort the list so that we can take the largest spots
-%         [~,sizeIndex] = sort(area_vector(:),'descend');  
-% 
-%        NUMEX = 1;
-%     % Plot the largest blobs - NUMEX more than the number of fish we have
-%         
-%     if length(s) > fishNum + NUMEX % WE have enough blobs to start.
-%         hold on;     
-%         for z = 1:fishNum+NUMEX; %%%%%% NUMBER OF EXTRA CENTROIDS 
-%             XX = (s(sizeIndex(z)).MajorAxisLength * cosd(s(sizeIndex(z)).Orientation))/2;
-%             YY = (s(sizeIndex(z)).MajorAxisLength * sind(s(sizeIndex(z)).Orientation))/2;
-%             xs = [(s(sizeIndex(z)).Centroid(1) - XX) (s(sizeIndex(z)).Centroid(1) + XX)];
-%             ys = [(s(sizeIndex(z)).Centroid(2) + YY) (s(sizeIndex(z)).Centroid(2) - YY)];
-%         plot(xs,ys,colrl(z,:));
-%         plot(s(sizeIndex(z)).Centroid(1),s(sizeIndex(z)).Centroid(2),colr(z,:));
-%         end        
-%     end
-%     
-%     
-%     if length(s) > fishNum + NUMEX % WE had enough blobs to start.
-%     for z = 1:fishNum; % z is each click
-%         clear dst;
-%         for j = 1:fishNum+1; 
-%             dst(j)=pdist([fishi(z,1),fishi(z,2);s(sizeIndex(j)).Centroid(1),s(sizeIndex(j)).Centroid(2)]);
-%         end;
-%             
-%         [~, closeIdx] = min(dst);
-%         currLoc(z,:) = [s(sizeIndex(closeIdx)).Centroid(1), s(sizeIndex(closeIdx)).Centroid(2)];
-%     end
-%     else
-%         for jjj = 1:length(fishi(:,1))
-%            currLoc(jjj,:) = round(fishi(jjj,:)); 
-%         end
-%     end
-%     
-%         
-% %end; XXX
-% 
-% %% Loop for each frame %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% fprintf('Tracking fish. \n');
-% 
-% figure(27); clf; imshow(grae(:,:,end)); hold on; pause(0.1);
-% 
-% for k = (endframe-startframe):-1:1; 
-%     
-% % Analyze the from using regionprops
-% 
-%     % I'm not sure what bwlabel does - but works with regionprops
-%         L = logical(bw(:,:,k));
-%     % Get the areas and the centroids and other info for all objects
-%     %tic
-%         s = regionprops(L, 'Area', 'Centroid', 'Orientation', 'MajorAxisLength', 'MinorAxisLength');
-%     %toc
-%     % Get the areas of the various "moving" regions
-%         area_vector = [s.Area];
-% 
-%      % Sort the list of blob sizes so that we can take the top N fish
-%         [~,sizeIndex] = sort(area_vector(:),'descend');
-%         if s(sizeIndex(1)).Centroid(1) < 2 && s(sizeIndex(1)).Centroid(2) < 2;
-%             sizeIndex(1:end-1) = sizeIndex(2:end); 
-%         end;
-% 
-%     % We know that the user will have to click if there are fewer blobs
-%     % than fish
-%         if length(sizeIndex) < fishNum; 
-%             for j = 1:length(sizeIndex);
-%                 figure(27); hold on; plot(s(sizeIndex(j)).Centroid(1), s(sizeIndex(j)).Centroid(2), 'ko');
-%             end;
-%             fprintf('Did not find sufficient blobs');
-%         %newclicks = getraxclix(grae(:,:,k), fishNum, fish); NEED TO FIX
-%         
-%         end;
-% 
-%         
-%     %% If we have sufficient points, track the fish
-%         if length(sizeIndex) >= fishNum;
-%             
-%             % Plot the moving spots
-%         if rem(k,50) == 0
-%             figure(27); clf; imshow(grae(:,:,k)); text(50, 50, num2str(k), 'Color', 'g');
-%             for j = 1:min([length(sizeIndex) fishNum+3]);
-%                 figure(27); hold on; plot(s(sizeIndex(j)).Centroid(1),s(sizeIndex(j)).Centroid(2), 'ko'); 
-%             end;
-%         end
-%         
-%             % For each fish...
-%             for z=1:fishNum; 
-%                 
-%             % Calculate the distances from the largest spots
-%                 clear dst;
-%                 for j = 1:min([length(sizeIndex) fishNum+3]);
-%                     dst(j)=pdist([currLoc(z,:); s(sizeIndex(j)).Centroid(1),s(sizeIndex(j)).Centroid(2)]);
-%                 end; 
-%                 
-%        % Test distance from previous point
-%                 [jumpdist, idx] = min(dst); % Find the minimum distance
-%                 currLoc(z,:) = [s(sizeIndex(idx)).Centroid(1), s(sizeIndex(idx)).Centroid(2)];
-%         
-%        % Get the user to click if the distance was too great                
-%                 if abs(jumpdist) > jumpthresh; 
-%                     
-%                     % vidpts = min([25 length(fish(z).x)-k]);
-%                     
-%                     %figure(1); clf; imshow(grae(:,:,k));                    
-%                     %plot(fish(z).x(k+1:k+pts), fish(z).y(k+1:k+pts), colrl(z,:));
-%                     %drawnow;
-%                     
-%                         if fishNum > 1
-%                            if z==1
-%                                 fprintf('It was the red fish \n');
-%                                 figure(7); clf; imshow(grae(:,:,k)); hold on;
-%                                 fnum=20;
-% %                             fprintf('It was the %i fish. 1==red 2==blue \n', z);
-% %                            figure(7); clf; imshow(grae(:,:,k)); hold on;
-% %                             fnum=20;
-%                            elseif z==2
-%                                 fprintf('It was the blue fish \n');
-%                                 figure(7); clf; imshow(grae(:,:,k)); hold on;
-%                                 fnum=20;
-%                            else
-%                                fprintf('Check Your Code');
-%                            end
-%                            if length(find(fish(end).x)) < fnum; 
-%                                fnum = length(find(fish(end).x))-1; 
-%                         end; % If too early, show what we have.
-%                 % Plot each of the fish
-%                     for i=1:fishNum;
-%                         if k < length(fish(i).x);
-%                         plot(fish(i).x(k+1:k+fnum), fish(i).y(k+1:k+fnum), colrl(i,:));
-%                         hold on; pause(0.2);
-%                         plot(fish(i).x(k+1), fish(i).y(k+1), colrl(i,:), 'LineWidth', 3); % CHANGED (+1) FOR WEIRD PLOT PROBLEM
-%                         end;
-%                     end;
-% 
-%                             
-%                         end
-%                     
-%                     newclicks = getraxclix(grae(:,:,k), 1, fish(z), k);
-%                     fish(z).x(k) = newclicks(1);
-%                     fish(z).y(k) = newclicks(2);
-%                     fish(z).frameno(k) = k + startframe - 1;
-%                     currLoc(z,:) = newclicks;
-%                 end;
-%                 
-%        % If the distance was within limits, then save the data!
-%                 if abs(jumpdist) < jumpthresh; 
-%                 fish(z).x(k) = s(sizeIndex(idx)).Centroid(1);
-%                 fish(z).y(k) = s(sizeIndex(idx)).Centroid(2);
-%                         
-%                 fish(z).orient(k) = s(sizeIndex(idx)).Orientation;
-%                 fish(z).majorLength(k) = s(sizeIndex(idx)).MajorAxisLength;
-%                 fish(z).minorLength(k) = s(sizeIndex(idx)).MinorAxisLength;
-%                     XX = (s(sizeIndex(idx)).MajorAxisLength * cosd(s(sizeIndex(idx)).Orientation))/2;
-%                     YY = (s(sizeIndex(idx)).MajorAxisLength * sind(s(sizeIndex(idx)).Orientation))/2;
-%                 fish(z).majorXs(k,:) = [(s(sizeIndex(idx)).Centroid(1)-XX) (s(sizeIndex(idx)).Centroid(1)+XX)];
-%                 fish(z).majorYs(k,:) = [(s(sizeIndex(idx)).Centroid(2)+YY) (s(sizeIndex(idx)).Centroid(2)-YY)];
-%                     XX = (s(sizeIndex(idx)).MinorAxisLength * cosd(s(sizeIndex(idx)).Orientation-90))/2;
-%                     YY = (s(sizeIndex(idx)).MinorAxisLength * sind(s(sizeIndex(idx)).Orientation-90))/2;
-%                 fish(z).minorXs(k,:) = [(s(sizeIndex(idx)).Centroid(1)-XX) (s(sizeIndex(idx)).Centroid(1)+XX)];
-%                 fish(z).minorYs(k,:) = [(s(sizeIndex(idx)).Centroid(2)+YY) (s(sizeIndex(idx)).Centroid(2)-YY)];
-%                 fish(z).frameno(k) = k+startframe-1;
-%                 end;
-% 
-%         % Plot our data    
-%         
-%         figure(27); plot(fish(z).x(k), fish(z).y(k), colr(z,:)); 
-%             pts = min([25 length(fish(z).x)-k]);
-%             plot(fish(z).x(k:k+pts), fish(z).y(k:k+pts), colrl(z,:));
-%             drawnow;
-%         
-%             end;
-% 
-%             
-% %% We have a problem if the points are not unique - we will need to click...
-%         
-%               for j = 1:fishNum; Xs(j) = fish(j).x(k); Ys(j) = fish(j).y(k); end;
-%               
-%               if length(unique(Xs)) ~= length(Xs) && length(unique(Ys)) ~= length(Ys);
-%                                
-%                 newclicks = getraxclix(grae(:,:,k), fishNum, fish, k);
-%                 
-%                 for jj = 1:fishNum;
-%                     fish(jj).x(k) = newclicks(jj,1); 
-%                     fish(jj).y(k) = newclicks(jj,2);
-%                     plot(fish(jj).x(k), fish(jj).y(k), colo(jj,:));
-%                     fish(z).frameno(k) = k+startframe-1;
-%                     currLoc(jj,:) = [newclicks(jj,1), newclicks(jj,2)];
-%                     
-%                     % If we had to click, these data are zeros due to
-%                     % initialization.  Should we do something else here?
-% %                     fish(z).majorLength(k) = [];
-% %                     fish(z).minorLength(k) = [];
-% %                     fish(z).majorXs(k,:) = [];
-% %                     fish(z).majorYs(k,:) = [];
-% %                     fish(z).minorXs(k,:) = [];
-% %                     fish(z).minorYs(k,:) = [];                    
-%                 end; 
-%               end;
-%               
-%         end;   % If there are enough blobs
-% end;  % Cycling through frames
-%     
-% 
-% 
-% %% When all is said and done, transfer the images to our output variable    
+%% When all is said and done, transfer the images to our output variable    
 fprintf('Taking final images. \n');
-for i = (endframe-startframe):-1:1; 
+for i = (endframe-startframe):-1:1 
     imdata(i).bw = bw(:,:,i); 
     imdata(i).gray = grae(:,:,i);
-end;
-% 
-% %% Plot final tracks
-% figure(99); hold off; imshow(grae(:,:,end)); hold on; 
-% for ii = 1:fishNum;
-%     plot(fish(ii).x, fish(ii).y, colr(ii,:));
-% end;
-% 
-%     
-% end
+end
+
 
 %% Award Winning Code
 %for j=16:2:length(asdf(1).x); plot(asdf(1).x(j-15:j), asdf(1).y(j-15:j), 'g*'); axis([0,350,0,350]); hold on; plot(asdf(2).x(j-15:j), asdf(2).y(j-15:j), 'm*'); pause(0.01); hold off; end;

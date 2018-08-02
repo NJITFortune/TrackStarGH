@@ -9,20 +9,20 @@ function [eodata, struct, im] = BrachyFUN
 
 %% User picks the video and Spike2 files for a trial.
 fprintf('Pick the video file');
-    [vidfile, vidpath] = uigetfile('*.avi', 'Pick the video file');
+    [vidfile, vidpath] = uigetfile('*.avi', 'Pick the video file.');
     f = fullfile(vidpath, vidfile);
-    
+    fprintf('\n');
     vid = VideoReader(f);
 
 fprintf('Pick the Spike2 Matlab file');    
-    [spkfile, spkpath] = uigetfile('*.mat', 'Pick the Spike2 Matlab file');
+    [spkfile, spkpath] = uigetfile('*.mat', 'Pick the Spike2 Matlab file.\n');
     f = fullfile(spkpath, spkfile);
     load(f);
+    fprintf('\n');
 
 % Show a random frame for the video 
     rr = randi([1 vid.NumberOfFrames], 1);
     figure(1); clf; imshow(rgb2gray(read(vid, rr)));
-
     
 numFish = input('How many Brachyhypopomus in the video (1 or 2): ');
 

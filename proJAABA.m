@@ -7,14 +7,14 @@ function out = proJAABA(in, im, eodata, species)
  species = [200 800]; % Eigenmannia
 % species = [500 1000]; % Apteronotus
 % For the time being, we only use data that wasn't clicked
-for fishnum = 1:length(in)
-    if length(in(fishnum).x) ~= length(in(fishnum).orient)
-    
-        fprintf('Missing orient data - Yasmine clicked!');
-        exit 1
-    
-    end
-end
+% for fishnum = 1:length(in)
+%     if length(in(fishnum).x) ~= length(in(fishnum).orient)
+%     
+%         fprintf('Missing orient data - Yasmine clicked!');
+%         exit 1
+%     
+%     end
+% end
 
 %% Preset values
 
@@ -261,7 +261,7 @@ if length(in) == 2
     if lrg ~= 0 % If the fish are different size...
         
      % Hopefully the two fish will have different amplitude EODs   
-     pleaseplease = ttest(tmp(1).amp, tmp(2).amp)
+     pleaseplease = ttest(tmp(1).amp, tmp(2).amp);
 
     if pleaseplease == 1
         
