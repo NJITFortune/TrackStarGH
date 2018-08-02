@@ -238,6 +238,9 @@ fpulses = filtfilt(b,a, eodata.values);
 
 % If a single fish
 if length(in) == 1
+    figure(2); clf;
+    subplot(211); plot(fpulses);
+    subplot(212); plot(fpulses(1:(1/eodata.interva)*2));
     tmp = singletrackEOD(eodata.values, length(im), 1/eodata.interval);
     out.eodfreq = tmp.freq;
     out.eodtim = tmp.tim;
