@@ -232,6 +232,9 @@ hold on;
     
 %% Track the pulses of the fish
 
+[b,a] = butter(3, 600/2*(1/eodata.interval), 'highpass');
+
+
 % If a single fish
 if length(in) == 1
     tmp = singletrackEOD(eodata.values, length(im), 1/eodata.interval);
