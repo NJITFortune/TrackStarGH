@@ -242,6 +242,7 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
 
     figure(2); clf;
     subplot(211); plot(tim, abs(dfpulses)); xlim([0 0.5]);
+    fprintf('Click on an early pulse.\n');
     [ix, ~] = ginput(1);
     [curramp, curridx] = max(dfpulses(tim > ix-0.005 & tim < ix+0.005));
     currtim = tim(curridx + length(find(tim < ix-0.005)));
