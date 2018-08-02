@@ -257,10 +257,13 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
         
         if isempty(nextim) == 1; currtim = tim(end); end % This should end things
         
+        if ~isempty(nextim)
         [curramp, curridx] = max(abs(dfpulses(tim > nextim & tim < nextim+0.010)));
         toe(end+1) = tim(curridx + length(find(tim < nextim)));
         amp(end+1) = curramp;
         currtim = toe(end);
+        end;
+        
     end
     
     out(1).toe = toe;
