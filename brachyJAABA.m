@@ -256,7 +256,7 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
         [curramp, curridx] = max(abs(dfpulses(tim > nextim & tim < nextim+0.010)));
         toe(end+1) = tim(curridx + length(find(tim < nextim)));
         amp(end+1) = curramp;
-        currtim = toe(end);
+        currtim = toe(end)
     end
     
     out.toe = toe;
