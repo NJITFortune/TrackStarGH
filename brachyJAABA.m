@@ -254,7 +254,7 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
         % Find next peak above threshold
         nextim = tim(find(abs(dfpulses(tim > currtim)) > curramp * 0.75, 1)) + currtim;
         [curramp, curridx] = max(abs(dfpulses(tim > nextim & tim < nextim+0.010)));
-        toe(end+1) = tim(curridx + length(find(tim < nextim)))
+        toe(end+1) = tim(curridx + length(find(tim < nextim)));
         amp(end+1) = curramp;
         currtim = toe(end)
     end
