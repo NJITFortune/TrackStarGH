@@ -1,4 +1,4 @@
-function [eodata, struct, im] = FUN
+function [eodata, struct, im] = BrachyFUN
 % Usage: [eodata, struct, im] = FUN
 % eodata is the Spike2 recordings of the EOD and the timing pulses
 % struct is the tracking data from the video images
@@ -6,24 +6,28 @@ function [eodata, struct, im] = FUN
 % swimmy will ask the necessary questions... you need at least one Matlab
 % file from Spike2 and one (or two) video files.  Good luck.
 
-fprintf('ONLY 1 video with 2 fish that dance on top of each other. \n');
 
-%if oneortwo==1;
-%aorb = input('Which tank is the video filmed in A or B (a or b are the
-%only acceptable answers!): ');
-%if aorb=a;
 %% User picks the video and Spike2 files for a trial.
 fprintf('Pick the video file');
     [vidfile, vidpath] = uigetfile('*.avi', 'Pick the video file');
     f = fullfile(vidpath, vidfile);
     
-    vidA = VideoReader(f);
+    vid = VideoReader(f);
 
 fprintf('Pick the Spike2 Matlab file');    
     [spkfile, spkpath] = uigetfile('*.mat', 'Pick the Spike2 Matlab file');
     f = fullfile(spkpath, spkfile);
     load(f);
+
+% Show a random frame for the video 
+    rr = randi([1 vid.NumberOfFrames], 1);
+    figure(1); clf; imshow(rgb2gray(read(vid, rr)));
+
     
+numFish = input('How many Brachyhypopomus in the video (1 or 2): ');
+
+close(1); % Close the video frame
+
 %% Simplify the variable names from Spike2
     curvars = who; 
 
@@ -37,18 +41,12 @@ fprintf('Pick the Spike2 Matlab file');
     end
      
 %% Track the fish in the video
-
-% Show a random frame for VidA
-    rr = randi([1 vidA.NumberOfFrames], 1);
-    figure(1); clf; imshow(rgb2gray(read(vidA, rr)));
-    
-    numFish = 2;
-    
-    [struct.A, im.A] = bestofriends(vidA, numFish, 100);
+        
+    [struct, im] = bestofriends(vid, numFish, 100);
 
     pause(3);
 
-    %% At the end, close all of the figures and plot the data
+%% At the end, close all of the figures and plot the data
     
 %   close all;
    
