@@ -129,7 +129,7 @@ for fishnum = 1:length(in)
     plot([out(fishnum).x(1)-currXs(1) out(fishnum).x(1)-currXs(1)], [1 boxlen*2], 'm-');
     plot([1 boxlen*2], [out(fishnum).y(1)-currYs(1) out(fishnum).y(1)-currYs(1)], 'm-');
     
-    truesize(1,[200 200])
+%    truesize(1,[200 200])
 
 fprintf('Please click in appropriate quadrent for the head. \n');
 
