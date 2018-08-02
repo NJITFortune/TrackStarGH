@@ -244,15 +244,16 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
     subplot(211); plot(tim, abs(dfpulses)); xlim([0 0.5]);
     fprintf('Click on an early pulse.\n');
     [ix, ~] = ginput(1);
-    [curramp, curridx] = max(dfpulses(tim > ix-0.005 & tim < ix+0.005));
+    [curramp, curridx] = max(abs(dfpulses(tim > ix-0.005 & tim < ix+0.005)));
     currtim = tim(curridx + length(find(tim < ix-0.005)));
     
     toe(1) = currtim;
     amp(1) = curramp;
+    
     while currtim < tim(end)-1
         % Find next peak above threshold
-        nextim = tim(find(dfpulses(tim > currtim) > curramp * 0.75, 1));
-        [curramp, curridx] = max(dfpulses(tim > nextim & tim < nextim+0.010));
+        nextim = tim(find(abs(dfpulses(tim > currtim)) > curramp * 0.75, 1));
+        [curramp, curridx] = max(abs(dfpulses(tim > nextim & tim < nextim+0.010)));
         toe(end+1) = tim(curridx + length(find(tim < nextim)));
         amp(end+1) = curramp;
         currtim = toe(end);
