@@ -230,7 +230,7 @@ hold on;
     
         pause(0.2); % Should use force draw, but this works too.
     
-%% Track the frequency of the fish
+%% Track the pulses of the fish
 
 % If a single fish
 if length(in) == 1
