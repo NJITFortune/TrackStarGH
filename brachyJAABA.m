@@ -240,8 +240,6 @@ dfpulses = diff(fpulses);
 dfpulses(end+1) = dfpulses(end);  
 tim = 1/dFs:1/dFs:length(fpulses)/dFs;
 
-% If a single fish
-if length(in) == 1
     figure(2); clf;
     subplot(211); plot(tim, abs(dfpulses)); xlim([0 0.5]);
     [ix, ~] = ginput(1);
@@ -249,100 +247,25 @@ if length(in) == 1
     currtim = tim(curridx + length(find(tim < ix-0.005)));
     
     toe(1) = currtim;
-    
-    while currtim < tim(end)
-        
-        
-        
+    amp(1) = curramp;
+    while currtim < tim(end)-1
+        % Find next peak above threshold
+        nextim = tim(find(dfpulses(tim > currtim) > curramp * 0.75, 1));
+        [curramp, curridx] = max(dfpulses(tim > nextim & tim < nextim+0.010));
+        toe(end+1) = tim(curridx + length(find(tim < nextim)));
+        amp(end+1) = curramp;
+        currtim = toe(end);
     end
     
-    
-    tmp = singletrackEOD(eodata.values, length(im), 1/eodata.interval);
-    out.eodfreq = tmp.freq;
-    out.eodtim = tmp.tim;
-    out.eodamp = tmp.amp;
-    clear tmp;
-end
+    out.toe = toe;
+    out.amps = amp;
 
-% If two fish, we need to figure out who is who...
+    pause(1);
 
-if length(in) == 2
-    
-    tmp = dualtrackEOD(eodata.values, length(im), 1/eodata.interval, species);
+    figure(3); clf; plot(tim, dfpulses); hold on; plot(out.toe, out.amps, 'r*');   
 
-    if lrg ~= 0 % If the fish are different size...
-        
-     % Hopefully the two fish will have different amplitude EODs   
-     pleaseplease = ttest(tmp(1).amp, tmp(2).amp);
 
-    if pleaseplease == 1
-        
-        if mean(tmp(1).amp) > mean(tmp(2).amp)
-            if lrg == 1
-                out(1).eodfreq = tmp(1).freq; out(1).eodtim = tmp(1).tim; out(1).eodamp = tmp(1).amp;
-                out(2).eodfreq = tmp(2).freq; out(2).eodtim = tmp(2).tim; out(2).eodamp = tmp(2).amp;
-            end
-            if lrg == 2
-                out(2).eodfreq = tmp(1).freq; out(2).eodtim = tmp(1).tim; out(2).eodamp = tmp(1).amp;
-                out(1).eodfreq = tmp(2).freq; out(1).eodtim = tmp(2).tim; out(1).eodamp = tmp(2).amp;
-            end
-        end
-        
-        if mean(tmp(1).amp) < mean(tmp(2).amp)
-            if lrg == 2
-                out(1).eodfreq = tmp(1).freq; out(1).eodtim = tmp(1).tim; out(1).eodamp = tmp(1).amp;
-                out(2).eodfreq = tmp(2).freq; out(2).eodtim = tmp(2).tim; out(2).eodamp = tmp(2).amp;
-            end
-            if lrg == 1
-                out(2).eodfreq = tmp(1).freq; out(2).eodtim = tmp(1).tim; out(2).eodamp = tmp(1).amp;
-                out(1).eodfreq = tmp(2).freq; out(1).eodtim = tmp(2).tim; out(1).eodamp = tmp(2).amp;
-            end
-        end
-                
-    end
-     
-    if pleaseplease == 0
-        
-        fprintf('We have to re-assign the frequencies later.\n');
-        
-        out(1).eodfreq = tmp(1).freq; out(1).eodtim = tmp(1).tim; out(1).eodamp = tmp(1).amp;
-        out(2).eodfreq = tmp(2).freq; out(2).eodtim = tmp(2).tim; out(2).eodamp = tmp(2).amp;
-    
-    end
-        
-    end
-    
-        if lrg == 0 % If the fish are different size...
-            
-        fprintf('We have to re-assign the frequencies later.\n');
-        
-        out(1).eodfreq = tmp(1).freq; out(1).eodtim = tmp(1).tim; out(1).eodamp = tmp(1).amp;
-        out(2).eodfreq = tmp(2).freq; out(2).eodtim = tmp(2).tim; out(2).eodamp = tmp(2).amp;
 
-        end
-end
-    
-    % close(27); % Close the previous figure after we've tracked the frequency of the fish.
-
-    figure(3); clf; subplot(211);
-    specgram(eodata.values, 4096, 1/eodata.interval, [], 4000); 
-    ylim(species); 
-    
-    caxis([-10 30]); colormap('HOT');
-    hold on;
-    plot(out(1).eodtim, out(1).eodfreq, 'g-', 'LineWidth', 1);
-    subplot(212); hold on;
-    plot(out(1).eodtim, out(1).eodamp, 'g-', 'LineWidth', 2); xlim([0 max(out(1).eodtim)]);
-
-if length(in) == 2
-    figure(3); subplot(211);
-    plot(out(2).eodtim, out(2).eodfreq, 'c-', 'LineWidth', 1);
-    figure(3); subplot(212); hold on;
-    plot(out(2).eodtim, out(2).eodamp, 'c-', 'LineWidth', 2); xlim([0 max(out(2).eodtim)]);
-    
-end
-
-pause(1); % An extra second to enjoy our handiwork.
 
 %% Fix potential problems using sidewinder
 % for j=1:length(out)
