@@ -154,31 +154,46 @@ end
     
 %% Get user picks for first fish positions
 
-fprintf('Click initial fish position(s) in Figure 1. \n');
+fprintf('Click initial fish position(s) in Figure 1. Click largest fish to smallest fish. \n');
     
     % Show the "end" image
        figure(1); imshow(grae(:,:,end)); 
     % Now click the fish
-        fishi = round(ginput(fishNum));
+    
+        fishi = round(ginput(fishNum)); % These are the x and y integers from the clicks on the video frame
 
-        hormax = length(bw(:,1,1));
+        hormax = length(bw(:,1,1)); % hormax and vermax are the size of the video frame
         vermax = length(bw(1,:,1));
+
+%% Track the fish        
         
+stationaryfish = 0;
+
 for jj = endframe-startframe-1:-1:1       % Cycle through every frame of our sample
     
     for kk = 1:fishNum % Cycle tracking for each fish
+
+% We cheat - we only track in a box around where the fish was previously located.        
+L = logical(bw(max([1 fishi(kk,2)-boxy(1)]):min([fishi(kk,2)+boxy(1) hormax]), max([1 fishi(kk,1)-boxy(2)]):min([fishi(kk,1)+boxy(2) vermax]), jj));
         
-        L = logical(bw(max([1 fishi(kk,2)-boxy(1)]):min([fishi(kk,2)+boxy(1) hormax]), max([1 fishi(kk,1)-boxy(2)]):min([fishi(kk,1)+boxy(2) vermax]), jj));
-        
-        %figure(2); clf; imshow(L); pause(5);
-        s = regionprops(L, 'Area', 'Centroid', 'Orientation', 'MajorAxisLength', 'MinorAxisLength');
+        s = regionprops(L, 'Area', 'Centroid', 'Orientation', 'MajorAxisLength', 'MinorAxisLength'); % Get the moving regions
         area_vector = [s.Area];
         % Take the largest blob
         [~, blobidx] = max(area_vector); 
         
             if isempty(blobidx) == 1 % We have no blob so we need to get a click
                 
-                % Show the two fish
+                if kk == stationaryfish % User told us that this fish is stationary
+                    
+                    % Take the previous known location of the fish
+                    fish(kk).x(jj) = fish(kk).x(jj+1); 
+                    fish(kk).y(jj) = fish(kk).y(jj+1);
+                    
+                end
+                
+                if kk ~= stationaryfish % Lost fish is not a known stationary fish
+                
+                % Show the fish
                 figure(1); clf; imshow(grae(:,:,jj)); hold on;
                 if kk == 1; % THIS IS ME BEING STOOPID.  Didn't bother to figure out how to handle the two fishies
                     plot(fish(kk).x, fish(kk).y, 'g-');
