@@ -244,9 +244,10 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
 if length(in) == 1
     figure(2); clf;
     subplot(211); plot(tim, abs(dfpulses)); xlim([0 0.5]);
-    [ix, iy] = ginput(1);
+    [ix, ~] = ginput(1);
     [curramp, curridx] = max(dfpulses(tim > ix-0.005 & tim < ix+0.005));
-    currtim = tim(curridx + length(tim < ix-0.005));
+    currtim = tim(curridx + length(find(tim < ix-0.005)));
+    
     
     tmp = singletrackEOD(eodata.values, length(im), 1/eodata.interval);
     out.eodfreq = tmp.freq;
