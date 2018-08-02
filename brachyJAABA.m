@@ -248,6 +248,14 @@ if length(in) == 1
     [curramp, curridx] = max(dfpulses(tim > ix-0.005 & tim < ix+0.005));
     currtim = tim(curridx + length(find(tim < ix-0.005)));
     
+    toe(1) = currtim;
+    
+    while currtim < tim(end)
+        
+        
+        
+    end
+    
     
     tmp = singletrackEOD(eodata.values, length(im), 1/eodata.interval);
     out.eodfreq = tmp.freq;
