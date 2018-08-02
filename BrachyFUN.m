@@ -42,7 +42,7 @@ close(1); % Close the video frame
      
 %% Track the fish in the video
         
-    [struct, im] = bestofriends(vid, numFish, 100);
+    [struct, im] = brachyfriends(vid, numFish, 100);
 
     pause(3);
 
