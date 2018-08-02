@@ -253,7 +253,7 @@ tim = 1/dFs:1/dFs:length(fpulses)/dFs;
     while currtim < tim(end)-1
     %while currtim < 5
         % Find next peak above threshold
-        nextim = tim(find(abs(dfpulses(tim > currtim+0.001)) > curramp * 0.75, 1)) + currtim;
+        nextim = tim(find(abs(dfpulses(tim > currtim+0.001)) > curramp * 0.5, 1)) + currtim;
         
         if isempty(nextim) == 1; currtim = tim(end); end % This should end things
         
