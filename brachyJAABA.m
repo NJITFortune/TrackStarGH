@@ -234,7 +234,7 @@ hold on;
 
 dFs = 1/eodata.interval;
 
-[b,a] = butter(3, 300/(pFs/2), 'high');
+[b,a] = butter(3, 300/(dFs/2), 'high');
 fpulses = filtfilt(b,a, eodata.values);
 dfpulses = diff(fpulses);
 dfpulses(end+1) = dfpulses(end);  
