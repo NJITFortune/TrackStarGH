@@ -16,7 +16,7 @@ numframes = in.FrameRate * in.Duration; % Calculate total frames in video
 fprintf('There are %i frames.\n', numframes);
 
 figure(1);
-    
+    startframe
 for j=startframe:2:numframes % for the entire video
 % for j=2:2:20 % For testing
    
