@@ -52,3 +52,4 @@ figure(2); clf; hold on;
     plot(out.tim, out.fishx, '*-g');
     
 fprintf('To prevent heartache and shame, save the data!\n');
+
