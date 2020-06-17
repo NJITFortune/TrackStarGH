@@ -1,10 +1,11 @@
-function out = ritaclick(in, ~)
+function out = ritaclick(in, r)
 % out = ritaclick(in);
 % run in = VideoReader('/Volumes/Cgate/Data2019/4_12_2019/individual_trials/trial1414_000hz/BammBamm_1414_000Hz.mov');
 % before using this script.
 % save: save filename.mat out
 
 startframe = 2;
+r = r+1;
 
 if nargin == 2
     load temp.mat out
@@ -16,7 +17,7 @@ numframes = in.FrameRate * in.Duration; % Calculate total frames in video
 fprintf('There are %i frames.\n', numframes);
 
 figure(1);
-    startframe
+    
 for j=startframe:2:numframes % for the entire video
 % for j=2:2:20 % For testing
    
