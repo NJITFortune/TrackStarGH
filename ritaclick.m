@@ -28,7 +28,7 @@ for j=2:2:numframes % for the entire video
 
    pause(0.2); % Allows the user to see the second click.  Could be 0.1 for faster work.
 
-    if rem(j / 20) == 0
+    if rem(j,20) == 0
 
        fprintf('Current Frame is %i.\n', j);
        save temp.mat out
