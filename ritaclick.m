@@ -7,6 +7,8 @@ function out = ritaclick(in)
 
 numframes = in.FrameRate * in.Duration; % Calculate total frames in video
 
+fprintf('There are $i frames./n', numframes);
+
 figure(1);
 
 for j=2:2:numframes % for the entire video
@@ -25,7 +27,9 @@ for j=2:2:numframes % for the entire video
    out.tim(j/2) = (1/in.FrameRate) * j; % Add the time of the current frame
 
    pause(0.2); % Allows the user to see the second click.  Could be 0.1 for faster work.
-    
+
+if remai   
+   
 end
 
 % Plot the click data when done for sanity check.
