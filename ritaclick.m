@@ -1,6 +1,9 @@
 function out = ritaclick(in)
-
+% out = ritaclick(in);
 % run in = VideoReader('/Volumes/Cgate/Data2019/4_12_2019/individual_trials/trial1414_000hz/BammBamm_1414_000Hz.mov');
+% before using this script.
+% save: save filename.mat out
+
 
 numframes = in.FrameRate * in.Duration;
 
