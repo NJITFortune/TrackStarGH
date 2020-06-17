@@ -5,11 +5,10 @@ function out = ritaclick(in, r)
 % save: save filename.mat out
 
 startframe = 2;
-r = r+1;
 
 if nargin == 2
     load temp.mat out
-    startframe = length(out)*2;
+    startframe = length(out.fishx)*2;
 end
 
 numframes = in.FrameRate * in.Duration; % Calculate total frames in video
