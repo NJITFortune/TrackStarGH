@@ -7,7 +7,7 @@ function out = ritaclick(in)
 
 numframes = in.FrameRate * in.Duration; % Calculate total frames in video
 
-fprintf('There are %i frames./n', numframes);
+fprintf('There are %i frames.\n', numframes);
 
 figure(1);
 
@@ -30,7 +30,7 @@ for j=2:2:numframes % for the entire video
 
     if rem(j / 20) == 0
 
-       fprintf('Current Frame is %i./n', j);
+       fprintf('Current Frame is %i.\n', j);
        save temp.mat out
 
     end
