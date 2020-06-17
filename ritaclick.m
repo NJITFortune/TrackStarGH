@@ -6,8 +6,8 @@ numframes = in.FrameRate * in.Duration;
 
 figure(1);
 
-%for j=2:2:numframes % for the entire video
-for j=2:2:20 % For testing
+for j=2:2:numframes % for the entire video
+% for j=2:2:20 % For testing
    
    currframe = read(in, j);
    clf; imshow(currframe); hold on;
