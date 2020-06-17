@@ -5,24 +5,30 @@ function out = ritaclick(in)
 % save: save filename.mat out
 
 
-numframes = in.FrameRate * in.Duration;
+numframes = in.FrameRate * in.Duration; % Calculate total frames in video
 
 figure(1);
 
 for j=2:2:numframes % for the entire video
 % for j=2:2:20 % For testing
    
-   currframe = read(in, j);
-   clf; imshow(currframe); hold on;
-   [out.shuttlex(j/2), out.shuttley(j/2)] = ginput(1);
+   currframe = read(in, j); % The reads the j frame of the video file
+
+   clf; imshow(currframe); hold on; % Clear the figure, show the frame
+
+   [out.shuttlex(j/2), out.shuttley(j/2)] = ginput(1); % User click the shuttle
         plot(out.shuttlex(j/2), out.shuttley(j/2), '.m', 'MarkerSize', 8); drawnow;
-   [out.fishx(j/2), out.fishy(j/2)] = ginput(1);
+
+        [out.fishx(j/2), out.fishy(j/2)] = ginput(1); % User click the fish
         plot(out.fishx(j/2), out.fishy(j/2), '.g', 'MarkerSize', 8); drawnow;
-   out.tim(j/2) = (1/in.FrameRate) * j;
-   pause(0.2);
+        
+   out.tim(j/2) = (1/in.FrameRate) * j; % Add the time of the current frame
+
+   pause(0.2); % Allows the user to see the second click.  Could be 0.1 for faster work.
     
 end
 
+% Plot the click data when done for sanity check.
 figure(2); clf; hold on;
     plot(out.tim, out.shuttlex, '*-m');
     plot(out.tim, out.fishx, '*-g');
