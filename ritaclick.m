@@ -16,7 +16,10 @@ numframes = in.FrameRate * in.Duration; % Calculate total frames in video
 fprintf('There are %i frames.\n', numframes);
 
 figure(1);
-    startframe
+
+    fprintf('Starting with frame %i.\n', startframe);
+
+%% Cycle through frames    
 for j=startframe:2:numframes % for the entire video
 % for j=2:2:20 % For testing
    
@@ -43,7 +46,9 @@ for j=startframe:2:numframes % for the entire video
    
 end
 
-% Plot the click data when done for sanity check.
+%% Plot the click data when done for sanity check.
 figure(2); clf; hold on;
     plot(out.tim, out.shuttlex, '*-m');
     plot(out.tim, out.fishx, '*-g');
+    
+fprintf('To prevent heartache and shame, save the data!\n');
