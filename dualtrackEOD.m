@@ -37,7 +37,30 @@ ylim(species); colormap('HOT'); caxis([-20 30]);
 
 % Get frequencies
 
-for j = totalframes:-1:1
+% % Single core mechanism
+% for j = totalframes:-1:1
+%    
+%     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
+%     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
+%    
+%     % Lower fish
+%     
+%     listOfreqs = tmp.fftfreq(tmp.fftfreq < splitterfreq & tmp.fftfreq > species(1));
+%         [out(1).amp(j), idx] = max(tmp.fftdata(tmp.fftfreq < splitterfreq & tmp.fftfreq > species(1)));
+%         out(1).freq(j) = listOfreqs(idx);
+%         out(1).tim(j) = vtims(j);
+% 
+%     % Higher fish
+%     
+%     listOfreqs = tmp.fftfreq(tmp.fftfreq > splitterfreq & tmp.fftfreq < species(2));
+%         [out(2).amp(j), idx] = max(tmp.fftdata(tmp.fftfreq > splitterfreq & tmp.fftfreq < species(2)));
+%         out(2).freq(j) = listOfreqs(idx);
+%         out(2).tim(j) = vtims(j);
+%         
+% end
+
+% Parallel processing mechanism
+for j = 1:totalframes
    
     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
@@ -45,18 +68,27 @@ for j = totalframes:-1:1
     % Lower fish
     
     listOfreqs = tmp.fftfreq(tmp.fftfreq < splitterfreq & tmp.fftfreq > species(1));
-        [out(1).amp(j), idx] = max(tmp.fftdata(tmp.fftfreq < splitterfreq & tmp.fftfreq > species(1)));
-        out(1).freq(j) = listOfreqs(idx);
-        out(1).tim(j) = vtims(j);
+        [Pamp1(j), idx] = max(tmp.fftdata(tmp.fftfreq < splitterfreq & tmp.fftfreq > species(1)));
+        Pfreq1(j) = listOfreqs(idx);
+        Ptim1(j) = vtims(j);
 
     % Higher fish
     
     listOfreqs = tmp.fftfreq(tmp.fftfreq > splitterfreq & tmp.fftfreq < species(2));
-        [out(2).amp(j), idx] = max(tmp.fftdata(tmp.fftfreq > splitterfreq & tmp.fftfreq < species(2)));
-        out(2).freq(j) = listOfreqs(idx);
-        out(2).tim(j) = vtims(j);
+        [Pamp2(j), idx] = max(tmp.fftdata(tmp.fftfreq > splitterfreq & tmp.fftfreq < species(2)));
+        Pfreq2(j) = listOfreqs(idx);
+        Ptim2(j) = vtims(j);
         
 end
+
+    out(1).amp = Pamp1;
+    out(1).freq = Pfreq1;
+    out(1).tim = Ptim1;
+    out(2).amp = Pamp2;
+    out(2).freq = Pfreq2;
+    out(2).tim = Ptim2;
+
+
 
  close(27);
 
