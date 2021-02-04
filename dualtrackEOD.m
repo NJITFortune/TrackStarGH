@@ -60,7 +60,7 @@ ylim(species); colormap('HOT'); caxis([-20 30]);
 % end
 
 % Parallel processing mechanism
-for j = 1:totalframes
+parfor j = 1:totalframes
    
     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
