@@ -23,17 +23,31 @@ rango = [precisefreq-de, precisefreq+de];
 
 % Get frequencies
 
-for j = totalframes:-1:1
+% % Single processor way
+% for j = totalframes:-1:1
+%    
+%     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
+%     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
+%     listOfreqs = tmp.fftfreq(tmp.fftfreq > rango(1) & tmp.fftfreq < rango(2));
+%         [out.amp(j), idx] = max(tmp.fftdata(tmp.fftfreq > rango(1) & tmp.fftfreq < rango(2)));
+%         out.freq(j) = listOfreqs(idx);
+%         out.tim(j) = vtims(j);
+% end
+
+% Parallel processor way
+parfor j = 1:totalframes
    
     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
     listOfreqs = tmp.fftfreq(tmp.fftfreq > rango(1) & tmp.fftfreq < rango(2));
-        [out.amp(j), idx] = max(tmp.fftdata(tmp.fftfreq > rango(1) & tmp.fftfreq < rango(2)));
-        out.freq(j) = listOfreqs(idx);
-        out.tim(j) = vtims(j);
+        [Pamp(j), idx] = max(tmp.fftdata(tmp.fftfreq > rango(1) & tmp.fftfreq < rango(2)));
+        Pfreq(j) = listOfreqs(idx);
+        Ptim(j) = vtims(j);
 end
 
-    
+    out.amp = Pamp;
+    out.freq = Pfreq;
+    out.tim = Ptim;
 % figure(1); clf; 
 % subplot(211);
 % specgram(data, 4096, Fs, [], 4000); ylim([200 1000]); caxis([-10 30]); colormap('HOT');
