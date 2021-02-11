@@ -1,8 +1,8 @@
-function out = singletrackEOD(data, totalframes, Fs)
-% Usage out = singletrackEOD(data, Fs)
+function out = singletrackEOD(data, videotimes, Fs)
+% Usage out = singletrackEOD(data, videotimes, Fs)
 % This tracks the EOD frequency of a single fish
-% providing an 'instantaneous' value for each video
-% frame.
+% providing an 'instantaneous' value of the amplitude and frequency
+% for each video frame.
 
 [b,a] = butter(3,400/(Fs/2),'high');
 
@@ -12,9 +12,9 @@ de = 50;
 
 etim = 1/Fs:1/Fs:length(data)/Fs;
 
-    vidrate = max(etim)/totalframes;
+    vidrate = max(etim)/videotimes;
     
-vtims = vidrate:vidrate:totalframes*vidrate;
+vtims = vidrate:vidrate:videotimes*vidrate;
 
 tmp = fftmachine(data, Fs); 
 [~, idx] = max(tmp.fftdata);
@@ -35,7 +35,7 @@ rango = [precisefreq-de, precisefreq+de];
 % end
 
 % Parallel processor way
-parfor j = 1:totalframes
+parfor j = 1:videotimes
    
     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
