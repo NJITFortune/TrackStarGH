@@ -59,7 +59,7 @@ figure(1); clf;
     plot(out.tim, out.freq, 'g.', 'MarkerSize', 2);
     ax(2) = subplot(212);
     plot(out.tim, out.amp, 'g.', 'MarkerSize', 1);
-    linkaxes(ax, 'x'); xlim([0, out.tim(end) + out.tim(1)]);
+    linkaxes(ax, 'x'); xlim([0, out.tim(end)]);
     
     
 
