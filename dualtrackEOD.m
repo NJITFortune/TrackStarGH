@@ -100,12 +100,11 @@ end
  
 %% Plot the data to make the user happy - comment this out if you don't need happiness
 figure(1); clf; 
-    ax(1) = subplot(211);
+    ax(1) = subplot(211); hold on;
     specgram(data, 4096, Fs, [], 4000); ylim([300 1000]); caxis([-10 30]); colormap('HOT');
-    hold on;
     plot(out(1).tim, out(1).freq, 'g.', 'MarkerSize', 2);
     plot(out(2).tim, out(2).freq, 'c.', 'MarkerSize', 2);
-    ax(2) = subplot(212);
+    ax(2) = subplot(212); hold on;
     plot(out(1).tim, out(1).amp, 'g.', 'MarkerSize', 1);
     plot(out(2).tim, out(2).amp, 'c.', 'MarkerSize', 1);
     linkaxes(ax, 'x'); xlim([0, out.tim(end)]);
