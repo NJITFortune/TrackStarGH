@@ -50,12 +50,15 @@ end
     out.amp = Pamp;
     out.freq = Pfreq;
     out.tim = Ptim;
-% figure(1); clf; 
-% subplot(211);
-% specgram(data, 4096, Fs, [], 4000); ylim([200 1000]); caxis([-10 30]); colormap('HOT');
-% hold on;
-% plot(out.tim, out.freq, 'g-', 'LineWidth', 1);
-% subplot(212);
-% plot(out.tim, out.amp, 'g-', 'LineWidth', 2);
 
+%% Plot the data to make the user happy - comment this out if you don't need happiness
+figure(1); clf; 
+    ax(1) = subplot(211);
+    specgram(data, 4096, Fs, [], 4000); ylim([200 1000]); caxis([-10 30]); colormap('HOT');
+    hold on;
+    plot(out.tim, out.freq, 'g-', 'LineWidth', 1);
+    ax(2) = subplot(212);
+    plot(out.tim, out.amp, 'g-', 'LineWidth', 2);
+    linkaxes(ax, 'x');
+    
 
