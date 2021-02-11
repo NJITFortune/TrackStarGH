@@ -37,7 +37,7 @@ rango = [precisefreq-de, precisefreq+de];
 % end
 
 % Parallel processor way
-parfor j = 1:videotimes
+parfor j = 1:length(videotimes)
    
     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
