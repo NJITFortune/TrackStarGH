@@ -56,9 +56,10 @@ figure(1); clf;
     ax(1) = subplot(211);
     specgram(data, 4096, Fs, [], 4000); ylim([200 1000]); caxis([-10 30]); colormap('HOT');
     hold on;
-    plot(out.tim, out.freq, 'g-', 'LineWidth', 1);
+    plot(out.tim, out.freq, 'g.', 'MarkerSize', 2);
     ax(2) = subplot(212);
-    plot(out.tim, out.amp, 'g-', 'LineWidth', 2);
-    linkaxes(ax, 'x');
+    plot(out.tim, out.amp, 'g.', 'MarkerSize', 1);
+    linkaxes(ax, 'x'); xlim([0, out.tim(end)]);
+    
     
 
