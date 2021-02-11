@@ -1,8 +1,8 @@
 function out = dualtrackEOD(data, totalframes, Fs, species)
-% Usage out = singletrackEOD(chan1, Fs)
-% This tracks the EOD frequency of a single fish
-% providing an 'instantaneous' value for each video
-% frame.
+% Usage out = singletrackEOD(data, totalframes, Fs, species)
+% This tracks the EOD frequencies of two fish
+% providing 'instantaneous' values for each video frame.
+% data is the samples, e.g. 
 % species = [200 800]; % Eigenmannia
 % species = [500 1100]; % Apteronotus
 
