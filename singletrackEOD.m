@@ -4,17 +4,16 @@ function out = singletrackEOD(data, videotimes, Fs)
 % providing an 'instantaneous' value of the amplitude and frequency
 % for each video frame.
 
-[b,a] = butter(3,400/(Fs/2),'high');
-
+% Filter the low frequency information out of the data
+[b,a] = butter(3,200/(Fs/2),'high');
 data = filtfilt(b,a,data);
 wid=1; % Width (in seconds) of the FFT
 de = 50;
 
 etim = 1/Fs:1/Fs:length(data)/Fs;
 
-    vidrate = max(etim)/videotimes;
-    
-vtims = vidrate:vidrate:videotimes*vidrate;
+%     vidrate = max(etim)/videotimes;
+%     vtims = vidrate:vidrate:videotimes*vidrate;
 
 tmp = fftmachine(data, Fs); 
 [~, idx] = max(tmp.fftdata);
