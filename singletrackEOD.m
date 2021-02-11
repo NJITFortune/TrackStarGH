@@ -10,6 +10,7 @@ data = filtfilt(b,a,data);
 wid=1; % Width (in seconds) of the FFT
 de = 50;
 
+% Time sequence for electrical data
 etim = 1/Fs:1/Fs:length(data)/Fs;
 
 %     vidrate = max(etim)/videotimes;
