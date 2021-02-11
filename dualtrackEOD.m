@@ -4,22 +4,26 @@ function out = dualtrackEOD(data, totalframes, Fs, species)
 % providing 'instantaneous' values for each video frame.
 % data is the samples, e.g. V170720_030_Ch1.values
 % totalframes is the number of video frames, which we can get from the
-% trigger channel, e.g. 
+% trigger channel, e.g. V170720_030_Ch4.length
+% Fs can be extracted from the data, e.g. 1/V170720_030_Ch1.interval
+% species is the Fourier transform (specgram) range for that species, e.g.
 % species = [200 800]; % Eigenmannia
 % species = [500 1100]; % Apteronotus
 
-[b,a] = butter(3,400/(Fs/2),'high');
-
+% Filter the low frequency information out of the data
+[b,a] = butter(3,200/(Fs/2),'high');
 data = filtfilt(b,a,data);
-wid=1;
+wid=1; % Width (in seconds) of the FFT
 % de = 50;
 
+% Time sequence for electrical data
 etim = 1/Fs:1/Fs:length(data)/Fs;
 
-    vidrate = max(etim)/totalframes;
-    
-vtims = vidrate:vidrate:totalframes*vidrate;
+    %vidrate = max(etim)/totalframes;
+    %vtims = vidrate:vidrate:totalframes*vidrate;
 
+    vtims = totalframes; % times, not length !!!
+    
 % tmp = fftmachine(data, Fs); 
 % 
 % semilogy(tmp.fftfreq, tmp.fftdata); 
