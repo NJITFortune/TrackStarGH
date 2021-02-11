@@ -1,5 +1,5 @@
 function out = singletrackEOD(data, totalframes, Fs)
-% Usage out = singletrackEOD(chan1, Fs)
+% Usage out = singletrackEOD(data, Fs)
 % This tracks the EOD frequency of a single fish
 % providing an 'instantaneous' value for each video
 % frame.
