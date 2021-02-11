@@ -1,10 +1,10 @@
-function out = dualtrackEOD(data, totalframes, Fs, species)
-% Usage out = singletrackEOD(data, totalframes, Fs, species)
+function out = dualtrackEOD(data, videotimes, Fs, species)
+% Usage out = singletrackEOD(data, videotimes, Fs, species)
 % This tracks the EOD frequencies of two fish
 % providing 'instantaneous' values for each video frame.
 % data is the samples, e.g. V170720_030_Ch1.values
 % totalframes is the number of video frames, which we can get from the
-% trigger channel, e.g. V170720_030_Ch4.length
+% trigger channel, e.g. V170720_030_Ch4.times
 % Fs can be extracted from the data, e.g. 1/V170720_030_Ch1.interval
 % species is the Fourier transform (specgram) range for that species, e.g.
 % species = [200 800]; % Eigenmannia
@@ -22,7 +22,7 @@ etim = 1/Fs:1/Fs:length(data)/Fs;
     %vidrate = max(etim)/totalframes;
     %vtims = vidrate:vidrate:totalframes*vidrate;
 
-    vtims = totalframes; % times, not length !!!
+    vtims = videotimes; % times, not length !!!
     
 % tmp = fftmachine(data, Fs); 
 % 
@@ -66,7 +66,7 @@ ylim(species); colormap('HOT'); caxis([-20 30]);
 % end
 
 % Parallel processing mechanism
-parfor j = 1:length(vtims) %totalframes
+parfor j = 1:length(vtims) % for each frame of the video sequence
    
     % tt = find(etim < vtims(j) & etim > vtims(j)-wid)
     tmp = fftmachine(data(etim < vtims(j) & etim > vtims(j)-wid), Fs);
