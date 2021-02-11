@@ -8,13 +8,15 @@ function out = singletrackEOD(data, videotimes, Fs)
 [b,a] = butter(3,200/(Fs/2),'high');
 data = filtfilt(b,a,data);
 wid=1; % Width (in seconds) of the FFT
-de = 50;
+de = 50; % Width in Hz that we can drift from original frequency
 
 % Time sequence for electrical data
 etim = 1/Fs:1/Fs:length(data)/Fs;
 
 %     vidrate = max(etim)/videotimes;
 %     vtims = vidrate:vidrate:videotimes*vidrate;
+
+    vtims = videotimes; % times, not length !!!
 
 tmp = fftmachine(data, Fs); 
 [~, idx] = max(tmp.fftdata);
