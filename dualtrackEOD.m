@@ -107,7 +107,7 @@ figure(1); clf;
     ax(2) = subplot(212); hold on;
     plot(out(1).tim, out(1).amp, 'g.', 'MarkerSize', 1);
     plot(out(2).tim, out(2).amp, 'c.', 'MarkerSize', 1);
-    linkaxes(ax, 'x'); xlim([0, out.tim(end)]);
+    linkaxes(ax, 'x'); xlim([0, out(1).tim(end)]);
     
     
 
