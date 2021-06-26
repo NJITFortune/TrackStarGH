@@ -5,7 +5,9 @@ function out = singletrackEOD(data, videotimes, Fs)
 % for each video frame.
 
 % Filter the low frequency information out of the data
-[b,a] = butter(3,200/(Fs/2),'high');
+cutoffreq = 320; % Default was 200 Hz
+
+[b,a] = butter(3,cutoffreq/(Fs/2),'high');
 data = filtfilt(b,a,data);
 wid=1; % Width (in seconds) of the FFT
 de = 50; % Width in Hz that we can drift from original frequency
